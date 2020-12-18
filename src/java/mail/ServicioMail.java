@@ -1,4 +1,7 @@
+package mail;
 
+
+import entity.User;
 import javax.mail.Multipart;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -20,6 +23,7 @@ import javax.mail.internet.MimeMultipart;
 /**
  * Builds an Email Service capable of sending normal email to a given SMTP Host.
  * Currently <b>send()</b> can only works with text.
+ * @author Endika Ubierna, Markel Lopez de Uralde, Xabier Carnero
  */
 public class ServicioMail {
 
@@ -71,7 +75,6 @@ public class ServicioMail {
 
             // Mail properties
         Properties properties = new Properties();
-        properties.put("mail.smtp.auth", true);
         properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.smtp.host", smtp_host);
         properties.put("mail.smtp.port", smtp_port);
@@ -79,7 +82,9 @@ public class ServicioMail {
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.ssl.trust", smtp_host);
         properties.put("mail.imap.partialfetch", false);
-            
+        properties.put("mail.smtp.ssl.enable", false);
+        properties.put("mail.smtp.auth", true);
+        
             // Authenticator knows how to obtain authentication for a network connection.
         Session session = Session.getInstance(properties, new Authenticator() {
         @Override
@@ -116,10 +121,10 @@ public class ServicioMail {
     }
 
     public static void main(String[] args) {
-        ServicioMail emailService = new ServicioMail("nobody@gmail.com", 
-                "somePassword", "smtp.gmail.com", 465);
+        ServicioMail emailService = new ServicioMail("emex51.info@gmail.com", 
+                "abcd*1234", "smtp.gmail.com", 465);
         try {
-            emailService.sendMail("receiver@gmail.com", "Mensaje de prueba", 
+            emailService.sendMail("markeluralde@gmail.com", "Su nueva clave es la siguiente: ", 
                     "Correo de vital importancia");
             System.out.println("Ok, mail sent!");
         } catch (MessagingException e) {
