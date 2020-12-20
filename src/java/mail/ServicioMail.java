@@ -28,8 +28,8 @@ import javax.mail.internet.MimeMultipart;
 public class ServicioMail {
 
      // Server mail user & pass account
-    private String user = null;
-    private String pass = null;
+   private static final String user = "emex51.info@gmail.com";
+    private String pass = "abcd*1234";
 
     // DNS Host + SMTP Port
     private String smtp_host = null;
@@ -47,8 +47,8 @@ public class ServicioMail {
      * @param host The Server DNS
      * @param port The Port
      */
-    public ServicioMail(String user, String pass, String host, int port) {
-            this.user = user;
+    public ServicioMail(String pass, String host, int port) {
+
             this.pass = pass;
             this.smtp_host = host;
             this.smtp_port = port;
@@ -120,16 +120,13 @@ public class ServicioMail {
         }
     }
 
-    public static void main(String[] args) {
-        ServicioMail emailService = new ServicioMail("emex51.info@gmail.com", 
-                "abcd*1234", "smtp.gmail.com", 465);
+    public void sendRecoveryMail(String receiver, String tempPassword) {
         try {
-            emailService.sendMail("markeluralde@gmail.com", "Su nueva clave es la siguiente: ", 
-                    "Correo de vital importancia");
-            System.out.println("Ok, mail sent!");
-        } catch (MessagingException e) {
-            System.out.println("Doh! " + e.getMessage());
+            String message = "Your password has been reset. You can access your account using this temporal password: " + tempPassword;
+            
+            sendMail(receiver, "Password Reset", message);
+        } catch (MessagingException ex) {
+            Logger.getLogger(ServicioMail.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
 }
