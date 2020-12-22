@@ -33,7 +33,7 @@ public class CifradoClavePublica {
         byte[] encodedMessage = null;
         try {
             // Clave p�blica
-            byte fileKey[] = fileReader("c:\\security\\Public.key");
+            byte fileKey[] = fileReader("Public.key");
             System.out.println("Tama�o -> " + fileKey.length + " bytes");
 
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -60,7 +60,7 @@ public class CifradoClavePublica {
         byte[] decodedMessage = null;
         try {
             // Clave p�blica
-            byte fileKey[] = fileReader("c:\\security\\Private.key");
+            byte fileKey[] = fileReader("Public.key");
             System.out.println("Tama�o -> " + fileKey.length + " bytes");
 
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");

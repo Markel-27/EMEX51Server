@@ -55,7 +55,7 @@ public class CifradoClavePrivada {
             // Guardamos el mensaje codificado: IV (16 bytes) + Mensaje
             byte[] combined = concatArrays(iv, encodedMessage);
 
-            fileWriter("c:\\security\\Private.dat", combined);
+            fileWriter("c:\\generatedKeys\\Private.dat", combined);
 
             ret = new String(encodedMessage);
 
@@ -75,7 +75,7 @@ public class CifradoClavePrivada {
         String ret = null;
 
         // Fichero leído
-        byte[] fileContent = fileReader("c:\\security\\Private.dat");
+        byte[] fileContent = fileReader("c:\\generatedKeys\\Private.dat");
         KeySpec keySpec = null;
         SecretKeyFactory secretKeyFactory = null;
         try {

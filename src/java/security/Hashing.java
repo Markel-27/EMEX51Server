@@ -32,12 +32,6 @@ public class Hashing {
             messageDigest.update(resumen);
             // Calcula el resumen (función digest)
             messageDigest.digest(resumen);
-            System.out.println("Mensaje original: "+texto);
-            System.out.println("Número de Bytes: "+resumen.length);
-            System.out.println("Algoritmo usado: "+messageDigest.getAlgorithm());
-            System.out.println("Resumen del Mensaje: "+resumen);
-            System.out.println("Mensaje en Hexadecimal: "+Hashing.Hexadecimal(resumen));
-            System.out.println("Proveedor: "+messageDigest.getProvider());
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(Hashing.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -54,11 +48,5 @@ public class Hashing {
             HEX += h;
         }
         return HEX.toUpperCase();
-    }
-
-    public static void main(String[] args) {
-        Hashing SHA1 = new Hashing();
-        SHA1.cifrarTexto("Tres tristes tigres comen trigo sentados en un trigal");
-    }
-    
+    }    
 }
