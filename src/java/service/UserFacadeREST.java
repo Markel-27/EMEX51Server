@@ -13,6 +13,7 @@ import exception.DeleteException;
 import exception.EmailNotExistException;
 import exception.IncorrectPasswordException;
 import exception.LoginNotExistException;
+import exception.PasswordDontMatchException;
 import exception.ReadException;
 import exception.UpdateException;
 import java.util.List;
@@ -23,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
@@ -145,11 +147,10 @@ public class UserFacadeREST extends AbstractUserFacade {
     @Produces({MediaType.APPLICATION_XML})
     public User comprobateLogin(@PathParam("login") String login, @PathParam("password") String password) {
         LOGGER.log(Level.INFO, "Metodo find de la clase UserFacade");
-        System.out.println("Login: "+login+" Password: "+password);
         try {
             return super.login(login, password);
         } catch (IncorrectPasswordException | LoginNotExistException ex) {
-            throw new InternalServerErrorException(ex.getMessage());
+            throw new InternalServerErrorException(ex);
         }
     }
 
@@ -161,7 +162,7 @@ public class UserFacadeREST extends AbstractUserFacade {
     @GET
     @Path("all")
     @Produces({MediaType.APPLICATION_XML})
-    public List<User> findAllEmployees() {
+    public List<User> findAllUsers() {
         LOGGER.log(Level.INFO, "Metodo findAllUsers de la clase UsersFacade");
         try {
             return super.getAllUsers();
@@ -182,8 +183,8 @@ public class UserFacadeREST extends AbstractUserFacade {
     @Path("login/{login}")
     @Produces({MediaType.APPLICATION_XML})
     public User findUsersByLogin(@PathParam("login") String login) {
+        LOGGER.log(Level.INFO, "Metodo find by login de la clase UserFacade");
         try {
-            LOGGER.log(Level.INFO, "Metodo find by login de la clase UserFacade");
             return super.getUserByLogin(login);
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
@@ -195,34 +196,49 @@ public class UserFacadeREST extends AbstractUserFacade {
         return null;
     }
 
-    @PUT
-    @Path("temporalPassword/{email}")
-    @Consumes({MediaType.APPLICATION_XML})
-    public void temporalPassword(@PathParam("email") String email) {
-        LOGGER.log(Level.INFO, "Metodo make temporal password de la clase UserFacade");
+    /**
+     * This method sends a mail to recover the password of the User.
+     *
+     * @param email
+     * @return An user.
+     */
+    @GET
+    @Path("sendMail/{email}")
+    @Produces({MediaType.APPLICATION_XML})
+    public User sendMail(@PathParam("email") String email) throws ForbiddenException, InternalServerErrorException {
+        LOGGER.log(Level.INFO, "Metodo send mail de la clase UserFacade");
         try {
-            List<User> users = super.getAllUsers();
-            super.temporalPassword(users, email);
+            super.sendEmail(email);
         } catch (ReadException | UpdateException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException(ex);
         } catch (EmailNotExistException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
-            //Mensaje de vuelta
+            //Cambiar por unautorized
+            throw new ForbiddenException(ex);
         }
+        return null;
     }
 
-    @PUT
-    @Path("newPassword/{user}")
-    @Consumes({MediaType.APPLICATION_XML})
-    public void changePassword(@PathParam("user") User user) {
+    /**
+     * This method changes the password of the User.
+     *
+     * @param email
+     * @param tempPass
+     * @param newPass
+     * @return An user.
+     * @throws exception.ReadException
+     * @throws exception.UpdateException
+     * @throws exception.PasswordDontMatchException
+     */
+    @GET
+    @Path("newPassword/{email}/{tempPass}/{newPass}")
+    @Produces({MediaType.APPLICATION_XML})
+    public User changePassword(@PathParam("email") String email, @PathParam("tempPass") String tempPass, @PathParam("newPass") String newPass)
+            throws ForbiddenException, InternalServerErrorException, ReadException, UpdateException, PasswordDontMatchException {
         LOGGER.log(Level.INFO, "Metodo change password de la clase UserFacade");
-        try {
-            super.edit(user);
-        } catch (UpdateException ex) {
-            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
-            throw new InternalServerErrorException();
-        }
+        super.newPassword(email, tempPass, newPass);
+        return null;
     }
 
     /**
