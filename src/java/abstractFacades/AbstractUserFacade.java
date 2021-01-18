@@ -5,6 +5,8 @@
  */
 package abstractFacades;
 
+import entity.Boss;
+import entity.Employee;
 import exception.ReadException;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -81,26 +83,29 @@ public abstract class AbstractUserFacade extends AbstractFacade<User> {
      */
     public User getUserByLogin(String login) throws ReadException, LoginNotExistException {
         LOGGER.log(Level.INFO, "Metodo getUserByLogin de la clase AbstractUserFacade");
-        try {
-            List<User> users = getEntityManager().createNamedQuery("findAllUsers").getResultList();
-            for (int i = 0; i < users.size(); i++) {
-                if (users.get(i).getLogin().compareToIgnoreCase(login) == 0) {
-                    return users.get(i);
+        
+        User user = new User();
+            List<User> users = getAllUsers();
+            for (User u: users) {
+                if (u.getLogin().compareToIgnoreCase(login) == 0) {
+                    if (u instanceof Boss){
+                        user.setLogin("Boss");
+                    } else if(u instanceof Employee){
+                        user.setLogin("Employee");
+                    }
+                    return user;
                 }
             }
             throw new LoginNotExistException();
-        } catch (Exception e) {
-            throw new ReadException("Error when trying to get all Users");
-        }
     }
 
-    public User login(String login, String password) throws IncorrectPasswordException, LoginNotExistException {
+    public User login(String login, String password) throws IncorrectPasswordException, LoginNotExistException, ReadException {
         LOGGER.log(Level.INFO, "Login method from AbstractUSerFacade");
         password = Hashing.cifrarTexto(Arrays.toString(PrivateKeyServer.descifrarTexto(password)));
-        List<User> users = getEntityManager().createNamedQuery("findAllUsers").getResultList();
+        List<User> users = getAllUsers();
         for (User u: users) {
-            if (u.getLogin().compareToIgnoreCase(login) == 0) {
-                if (u.getPassword().compareToIgnoreCase(password) == 0) {
+            if (u.getLogin().equals(login)) {
+                if (u.getPassword().equals(password)) {
                     return u;
                 } else {
                     throw new IncorrectPasswordException();
