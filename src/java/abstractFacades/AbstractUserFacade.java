@@ -19,8 +19,10 @@ import exception.UpdateException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.MessagingException;
 import security.Hashing;
-import security.MailService;
+import mail.MailService;
+import mail.RandomMailPasswordGenerator;
 import security.PasswordOptions;
 import security.PrivateKeyServer;
 
@@ -120,11 +122,16 @@ public abstract class AbstractUserFacade extends AbstractFacade<User> {
         List<User> users = getAllUsers();
         for (User u : users) {
             if (u.getEmail().compareToIgnoreCase(email) == 0) {
-                exist = true;
-                String tempPass = makePassword();
-                MailService.sendRecoveryMail(email, tempPass);
-                u.setPassword(Hashing.cifrarTexto(tempPass));
-                super.edit(u);
+                try {
+                    exist = true;
+                    String tempPass = RandomMailPasswordGenerator.createRandomPassword();
+                    MailService.sendRecoveryMail(email, tempPass);
+                    u.setPassword(Hashing.cifrarTexto(tempPass));
+                    super.edit(u);
+                } catch (MessagingException ex) {
+                    Logger.getLogger(AbstractUserFacade.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new ReadException(ex.getMessage());
+                }
             }
         }
         
