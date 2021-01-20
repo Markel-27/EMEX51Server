@@ -15,6 +15,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity JPA class for Boss data. This class inherits from de class User. The
@@ -73,6 +74,7 @@ public class Boss extends User implements Serializable {
      * Gets the list of {@link Employee} of the boss.
      * @return The Set of {@link Employee} value.
      */
+    @XmlTransient
     public Set<Employee> getEmployees() {
         return employees;
     }

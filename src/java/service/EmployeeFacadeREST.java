@@ -7,13 +7,12 @@ package service;
 
 import abstractFacades.AbstractEmployeeFacade;
 import abstractFacades.AbstractFacade;
+import entity.Boss;
 import entity.Employee;
-import entity.User;
 import exception.CreateException;
 import exception.DeleteException;
 import exception.EmailExistException;
 import exception.LoginExistException;
-import exception.PasswordDontMatchException;
 import exception.ReadException;
 import exception.UpdateException;
 import java.util.List;
@@ -67,9 +66,9 @@ public class EmployeeFacadeREST extends AbstractEmployeeFacade {
      * Create (Insert) operation after receiving a Post HTTP order.
      *
      * @param employee The employee object in xml format.
+     * @param id
      */
     @POST
-    @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Employee employee) {
         LOGGER.log(Level.INFO, "Metodo create Boss de la clase EmployeeFacade");

@@ -5,6 +5,7 @@
  */
 package abstractFacades;
 
+import entity.Boss;
 import security.Hashing;
 import entity.Employee;
 import exception.CreateException;
@@ -19,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import security.PrivateKeyServer;
+import service.BossFacadeREST;
 
 /**
  * Restful service for {@link Employee}. Inherits from AbstractFacade. Contains

@@ -21,6 +21,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -166,6 +167,23 @@ public class CreatureFacadeREST extends AbstractCreatureFacade {
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+    /**
+     * Gets a <code>List</code> of {@link Creature} of Area51 with the same specie as the one passed by the parameter.
+     * @param name A String with the specie of a <code>Creature</code>.
+     * @return A list of <code>Creature</code>.
+     */
+    @GET
+    @Path("especie/{especie}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Creature> findCreatureByEspecie(@PathParam("especie") String especie) {
+        LOGGER.log(Level.INFO, "Metodo find por especie de la clase CreatureFacade");
+        try {
+            return super.getCreaturesByEspecie(especie);
+        } catch (ReadException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new NotFoundException(ex);
         }
     }
     /**
