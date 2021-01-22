@@ -39,8 +39,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "findAllContents",
             query = "SELECT sc FROM SectorContent sc ORDER BY sc.name DESC"),
-    @NamedQuery(name = "findContentsByName",
-            query = "SELECT sc FROM SectorContent sc WHERE sc.name = :name")
+    @NamedQuery(name = "findContentsBySector",
+            query = "SELECT sc FROM SectorContent sc WHERE sc.sector = :sector")
 })
 @XmlRootElement
 public class SectorContent implements Serializable {

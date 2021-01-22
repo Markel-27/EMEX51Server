@@ -26,6 +26,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -77,9 +78,12 @@ public class EmployeeFacadeREST extends AbstractEmployeeFacade {
         } catch (CreateException ex) {
             Logger.getLogger(ArmyFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
             throw new InternalServerErrorException(ex);
-        } catch (EmailExistException | LoginExistException ex) {
+        } catch (EmailExistException ex) {
             Logger.getLogger(AbstractEmployeeFacade.class.getName()).log(Level.SEVERE, null, ex);
             throw new ForbiddenException(ex);
+        } catch (LoginExistException ex) {
+            Logger.getLogger(EmployeeFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            throw new NotAuthorizedException(ex);
         }
     }
 

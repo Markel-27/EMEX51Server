@@ -174,6 +174,7 @@ public class UserFacadeREST extends AbstractUserFacade {
         try {
             return super.login(login, password);
         } catch (IncorrectPasswordException ex) {
+            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
             throw new NotAuthorizedException(ex);
         } catch (ReadException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
