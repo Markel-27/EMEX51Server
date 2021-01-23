@@ -105,7 +105,7 @@ public class ArmyFacadeREST extends AbstractArmyFacade {
         LOGGER.log(Level.INFO, "Metodo remove de la clase ArmyFacade");
         try {
             super.remove(super.find(id));
-        } catch (ReadException | DeleteException ex) {
+        } catch (DeleteException | ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }

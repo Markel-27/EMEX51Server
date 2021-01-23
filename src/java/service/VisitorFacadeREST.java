@@ -59,13 +59,13 @@ public class VisitorFacadeREST extends AbstractVisitorFacade {
     }
     /**
      * Create (Insert) operation after receiving a Post HTTP order.
-     * @param entity The visitor object in xml format.
+     * @param visitor
      */
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Visitor visitor) {
-        LOGGER.log(Level.INFO, "Metodo create Boss de la clase BossFacade");
+        LOGGER.log(Level.INFO, "Metodo create Visitor de la clase VisitorFacade");
         try {
             super.createVisitor(visitor);
         } catch (CreateException ex) {
