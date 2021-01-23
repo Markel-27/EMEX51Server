@@ -67,6 +67,22 @@ public abstract class AbstractCreatureFacade extends AbstractFacade<Creature> {
         }
     }
     /**
+     * This method finds <code>Creature</code> by the class attribute especie.
+     * @param especie The class attribure especie.
+     * @return A list of <code>Creature</code>.
+     * @throws ReadException Thrown when any error produced during the read operation.
+     */  
+    public List<Creature> getCreaturesByEspecie(String species) throws ReadException{
+        LOGGER.log(Level.INFO, "Metodo getCreaturesByEspecie de la clase AbstractCreatureFacade");
+        try {
+            return getEntityManager().createNamedQuery("findCreaturesByEspecie")
+                    .setParameter("species", species)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new ReadException("Error when trying to get creatures by especie");
+        }
+    }
+    /**
      * This method finds <code>Creature</code> by the {@link Sector} where are storaged.
      * @param sectorId The <code>Sector</code> id. It's the PK of the entity.
      * @return A list of <code>Creature</code>.

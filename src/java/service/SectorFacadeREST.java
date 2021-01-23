@@ -5,6 +5,7 @@
  */
 package service;
 
+import abstractFacades.AbstractFacade;
 import abstractFacades.AbstractSectorFacade;
 import entity.Sector;
 import exception.CreateException;
@@ -21,6 +22,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -93,7 +95,7 @@ public class SectorFacadeREST extends AbstractSectorFacade {
     public void remove(@PathParam("id") Integer id) {
         LOGGER.log(Level.INFO, "Metodo remove de la clase SectorFacade");
         try {
-            super.remove(super.find(id));
+            super.deleteSector(super.find(id));
         } catch (ReadException | DeleteException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -129,7 +131,7 @@ public class SectorFacadeREST extends AbstractSectorFacade {
             return super.getAllSectors();
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex.getMessage());
+            throw new NotFoundException(ex.getMessage());
         }
     }
     /**
@@ -140,10 +142,27 @@ public class SectorFacadeREST extends AbstractSectorFacade {
     @GET
     @Path("name/{name}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Sector> findSectorsByName(@PathParam("name") String name) {
+    public List <Sector> findSectorsByName(@PathParam("name") String name) {
         LOGGER.log(Level.INFO, "Metodo find by name de la clase SectorFacade");
         try {
             return super.getSectorsByName(name);
+        } catch (ReadException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+    /**
+     * Gets all the <code>Sector</code> of the Area51 whose name equals the String passed as parameter.
+     * @param name A String. 
+     * @return A list of {@link Sector}
+     */
+    @GET
+    @Path("type/{type}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Sector> findSectorsByType(@PathParam("type") String type) {
+        LOGGER.log(Level.INFO, "Metodo find by type de la clase SectorFacade");
+        try {
+            return super.getSectorsByType(type);
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -159,24 +178,5 @@ public class SectorFacadeREST extends AbstractSectorFacade {
     protected EntityManager getEntityManager() {
         LOGGER.log(Level.INFO, "Metodo getEntityManager de la clase SectorFacade");
         return em;
-    }
-
-    @GET
-    @Path("id/{id}")
-    @Produces({MediaType.APPLICATION_XML})
-    public Sector findSectorById(@PathParam("id") Integer id) {
-        try {
-            LOGGER.log(Level.INFO, "Metodo find by id de la clase SectorFacade");
-            List<Sector> sectors = super.getAllSectors();
-            for (int i = 0; i < sectors.size(); i++) {
-                if (sectors.get(i).getIdSector().equals(id)) {
-                    return sectors.get(i);
-                }
-            }
-            return null;
-        } catch (ReadException ex) {
-            LOGGER.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex.getMessage());
-        }
     }
 }

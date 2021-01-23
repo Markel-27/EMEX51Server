@@ -53,6 +53,7 @@ public abstract class AbstractFacade<T> {
      * insert operation against a MySQL database.
      * @param entity An entity class. This Entity replaces the generic Java type
      * <T>.
+     * @throws exception.CreateException
      */
     public void create(T entity) throws CreateException {
         LOGGER.log(Level.INFO, "Metodo create de la clase AbstractFacade");

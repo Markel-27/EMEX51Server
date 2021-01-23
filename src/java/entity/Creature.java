@@ -26,7 +26,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "findAllCreatures",
             query = "SELECT c FROM Creature c"),
     @NamedQuery(name = "findCreatureByName",
-            query = "SELECT c FROM Creature c WHERE c.name = :name"),})
+            query = "SELECT c FROM Creature c WHERE c.name = :name"),
+    @NamedQuery(name = "findCreaturesByEspecie",
+            query = "SELECT c FROM Creature c WHERE c.species = :species"),
+    @NamedQuery(name = "findCreaturesBySector",
+            query = "SELECT c FROM Creature c WHERE c.sector = :sector")
+})
 @XmlRootElement
 public class Creature extends SectorContent implements Serializable {
 

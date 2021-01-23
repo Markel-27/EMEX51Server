@@ -39,11 +39,11 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "SECTOR", schema = "emex51db")
 @NamedQueries({
     @NamedQuery(name = "findAllSectors",
-            query = "SELECT s FROM Sector s ORDER BY s.id DESC")
-    ,
+            query = "SELECT s FROM Sector s ORDER BY s.id DESC"),
     @NamedQuery(name = "findSectorByName",
-            query = "SELECT s FROM Sector s WHERE s.name = :name")
-
+            query = "SELECT s FROM Sector s WHERE s.name = :name"),
+    @NamedQuery(name = "findSectorByType",
+            query = "SELECT s FROM Sector s WHERE s.type = :type") 
 })
 @XmlRootElement
 public class Sector implements Serializable {
@@ -223,5 +223,21 @@ public class Sector implements Serializable {
     @Override
     public String toString() {
         return "Sector{" + "idSector=" + id + '}';
+    }
+   /**
+     * Adds a content to the list of contents stored in the sector. This content can be an <code>Army</code> or<code>Creature</code>.
+     * @param sectorContent A content stored in the sector.
+     */
+    public void addContent(SectorContent sectorContent) {
+        this.sectorContent.add(sectorContent);
+        sectorContent.setSector(this);
+    }
+    /**
+     * Removes a content to the list of contents stored in the sector. This content can be an <code>Army</code> or<code>Creature</code>.
+     * @param sectorContent A content stored in the sector.
+     */
+    public void removeContent(SectorContent sectorContent) {
+        this.sectorContent.remove(sectorContent);
+        sectorContent.setSector(null);
     }
 }

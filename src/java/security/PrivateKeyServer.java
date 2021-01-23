@@ -5,13 +5,16 @@
  */
 package security;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import javax.crypto.Cipher;
+import mail.CifradoPrivadoMail;
 
 /**
  *
@@ -29,9 +32,7 @@ public class PrivateKeyServer {
     public static byte[] descifrarTexto(String mensaje) {
         byte[] decodedMessage = hexToByte(mensaje);
         try {
-            // Clave p�blica
-            byte fileKey[] = fileReader("C:\\Users\\xabig\\OneDrive\\Documentos\\NetBeansProjects\\EMEX51Server\\Private.key");
-            System.out.println("Tama�o -> " + fileKey.length + " bytes");
+            byte fileKey[] = getPublicFileKey("security/Private.key");
 
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             PKCS8EncodedKeySpec pKCS8EncodedKeySpec = new PKCS8EncodedKeySpec(fileKey);
@@ -49,7 +50,7 @@ public class PrivateKeyServer {
     /**
      * This method converts the hexadecimal string text received to byte array.
      *
-     * @param hexText hexadecimal text to convert.
+     * @param s
      * @return converted text in byte array.
      */
 public static byte[] hexToByte(String s) {
@@ -65,18 +66,24 @@ public static byte[] hexToByte(String s) {
     
     /**
      * Retorna el contenido de un fichero
-     * 
-     * @param path Path del fichero
+     *
+     * @param path
      * @return El texto del fichero
      */
-    private static byte[] fileReader(String path) {
-        byte ret[] = null;
-        File file = new File(path);
-        try {
-            ret = Files.readAllBytes(file.toPath());
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static byte[] getPublicFileKey(String path) throws IOException {
+
+        InputStream keyfis = CifradoPrivadoMail.class.getClassLoader()
+                .getResourceAsStream(path);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len;
+        // read bytes from the input stream and store them in buffer
+        while ((len = keyfis.read(buffer)) != -1) {
+            // write bytes from the buffer into output stream
+            os.write(buffer, 0, len);
         }
-        return ret;
+        keyfis.close();
+        return os.toByteArray();
     }
 }

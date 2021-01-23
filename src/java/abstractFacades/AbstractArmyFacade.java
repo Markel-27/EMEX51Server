@@ -8,6 +8,7 @@ package abstractFacades;
 import entity.Army;
 import entity.Sector;
 import exception.ReadException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -82,4 +83,13 @@ public abstract class AbstractArmyFacade extends AbstractFacade<Army> {
             throw new ReadException("Error when trying to get armys by sector");
         }
     }   
+    
+    public List<Army> findArmyByMunition(Integer ammunition) throws ReadException{
+        List<Army> armys = getAllArmys();
+        List<Army> armyReturn = new ArrayList();
+        for(Army a: armys)
+            if(a.getAmmunition()<ammunition)
+                armyReturn.add(a);
+        return armyReturn;
+    }
 }

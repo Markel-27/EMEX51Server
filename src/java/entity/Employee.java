@@ -35,7 +35,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "findAllEmployees",
             query = "SELECT e FROM Employee e"),
     @NamedQuery(name = "findEmployeesByName",
-            query = "SELECT e FROM Employee e WHERE e.fullName LIKE '%:name%'")
+            query = "SELECT e FROM Employee e WHERE e.fullName = :name"),
+    @NamedQuery(name = "findEmployeeByEmail",
+            query = "SELECT e FROM Employee e WHERE e.email = :email")
 })
 @XmlRootElement
 public class Employee extends User implements Serializable {
@@ -114,7 +116,7 @@ public class Employee extends User implements Serializable {
 
     /**
      * Sets a list of {@link Sector} managed by the employee.
-     * @param sector The list {@link Sector} value.
+     * @param sectors
      */
     public void setSectors(Set<EmployeeSectorManagement> sectors) {
         this.sectorsManaged = sectors;
@@ -131,7 +133,7 @@ public class Employee extends User implements Serializable {
 
     /**
      * Sets a list of {@link Visitor} managed by the employee.
-     * @param visitante The list {@link Visitor} value.
+     * @param visitantes
      */
     public void setVisitors(Set<Visitor> visitantes) {
         this.visitors = visitantes;
@@ -141,7 +143,6 @@ public class Employee extends User implements Serializable {
      * Gets the {@link Boss} of the employee.
      * @return The {@link Boss} value.
      */
-    @XmlTransient
     public Boss getBoss() {
         return boss;
     }

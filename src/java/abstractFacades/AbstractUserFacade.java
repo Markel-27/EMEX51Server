@@ -5,6 +5,8 @@
  */
 package abstractFacades;
 
+import entity.Boss;
+import entity.Employee;
 import exception.ReadException;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -12,12 +14,15 @@ import entity.User;
 import exception.EmailNotExistException;
 import exception.IncorrectPasswordException;
 import exception.LoginNotExistException;
+import exception.PasswordDontMatchException;
 import exception.UpdateException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.MessagingException;
 import security.Hashing;
-import security.MailService;
+import mail.MailService;
+import mail.RandomMailPasswordGenerator;
 import security.PasswordOptions;
 import security.PrivateKeyServer;
 
@@ -80,52 +85,73 @@ public abstract class AbstractUserFacade extends AbstractFacade<User> {
      */
     public User getUserByLogin(String login) throws ReadException, LoginNotExistException {
         LOGGER.log(Level.INFO, "Metodo getUserByLogin de la clase AbstractUserFacade");
-        try {
-            List<User> users = getEntityManager().createNamedQuery("findAllUsers").getResultList();
-            for (int i = 0; i < users.size(); i++) {
-                if (users.get(i).getLogin().compareToIgnoreCase(login) == 0) {
-                    return users.get(i);
+        
+        User user = new User();
+            List<User> users = getAllUsers();
+            for (User u: users) {
+                if (u.getLogin().compareToIgnoreCase(login) == 0) {
+                    if (u instanceof Boss){
+                        user.setLogin("Boss");
+                    } else if(u instanceof Employee){
+                        user.setLogin("Employee");
+                    }
+                    return user;
                 }
             }
             throw new LoginNotExistException();
-        } catch (Exception e) {
-            throw new ReadException("Error when trying to get all Users");
-        }
     }
 
-    public void temporalPassword(List<User> users, String email) throws UpdateException, EmailNotExistException {
-        LOGGER.log(Level.INFO, "Temporal Password method from AbstractUSerFacade");
-        boolean existe = false;
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getEmail().compareToIgnoreCase(email) == 0) {
-                existe = true;
-                String newPassword = makePassword();
-                MailService.sendRecoveryMail(email, newPassword);
-                users.get(i).setPassword(newPassword);
-                super.edit(users.get(i));
-                break;
-            }
-        }
-        if (!existe) {
-            throw new EmailNotExistException();
-        }
-    }
-
-    public User login(String login, String password) throws IncorrectPasswordException, LoginNotExistException {
+    public User login(String login, String password) throws IncorrectPasswordException, LoginNotExistException, ReadException {
         LOGGER.log(Level.INFO, "Login method from AbstractUSerFacade");
-        password = Arrays.toString(PrivateKeyServer.descifrarTexto(password));
-        password = Hashing.cifrarTexto(password);
-        List<User> users = getEntityManager().createNamedQuery("findAllUsers").getResultList();
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getLogin().compareToIgnoreCase(login) == 0) {
-                if (users.get(i).getPassword().compareToIgnoreCase(password) == 0) {
-                    return users.get(i);
+        password = Hashing.cifrarTexto(Arrays.toString(PrivateKeyServer.descifrarTexto(password)));
+        List<User> users = getAllUsers();
+        for (User u: users) {
+            if (u.getLogin().equals(login)) {
+                if (u.getPassword().equals(password)) {
+                    return u;
                 } else {
                     throw new IncorrectPasswordException();
                 }
             }
         }
         throw new LoginNotExistException();
+    }
+
+    public void sendEmail(String email) throws ReadException, UpdateException, EmailNotExistException {
+        Boolean exist = false;
+        List<User> users = getAllUsers();
+        for (User u : users) {
+            if (u.getEmail().compareToIgnoreCase(email) == 0) {
+                try {
+                    exist = true;
+                    String tempPass = RandomMailPasswordGenerator.createRandomPassword();
+                    MailService.sendRecoveryMail(email, tempPass);
+                    u.setPassword(Hashing.cifrarTexto(tempPass));
+                    super.edit(u);
+                } catch (MessagingException ex) {
+                    Logger.getLogger(AbstractUserFacade.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new ReadException(ex.getMessage());
+                }
+            }
+        }
+        
+        if(!exist)
+            throw new EmailNotExistException();
+    }
+
+    public void newPassword(String email, String tempPass, String newPass) throws ReadException, UpdateException, PasswordDontMatchException {
+        List<User> users = getAllUsers();
+        for (User u : users) {
+            if (u.getEmail().compareToIgnoreCase(email) == 0) {
+                if (u.getPassword().compareToIgnoreCase(Hashing.cifrarTexto(tempPass)) == 0) {
+                    newPass = Arrays.toString(PrivateKeyServer.descifrarTexto(newPass));
+                    u.setPassword(Hashing.cifrarTexto(newPass));
+                    super.edit(u);
+                } else {
+                    throw new PasswordDontMatchException();
+                }
+            }
+        }
     }
 
     private String makePassword() {
