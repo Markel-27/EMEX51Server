@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.ResourceBundle;
 import javax.crypto.Cipher;
 import mail.CifradoPrivadoMail;
 
@@ -21,18 +22,19 @@ import mail.CifradoPrivadoMail;
  * @author xabig
  */
 public class PrivateKeyServer {
-    
-        /**
-     * Descifra un texto con RSA, modo ECB y padding PKCS1Padding (asim�trica) y lo
-     * retorna
-     * 
+
+    /**
+     * Descifra un texto con RSA, modo ECB y padding PKCS1Padding (asim�trica) y
+     * lo retorna
+     *
      * @param mensaje El mensaje a descifrar
      * @return El mensaje descifrado
      */
     public static byte[] descifrarTexto(String mensaje) {
         byte[] decodedMessage = hexToByte(mensaje);
         try {
-            byte fileKey[] = getPublicFileKey("security/Private.key");
+            ResourceBundle rb = ResourceBundle.getBundle("security.privateKeyFile");
+            byte fileKey[] = getPublicFileKey(rb.getString("filepath"));
 
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             PKCS8EncodedKeySpec pKCS8EncodedKeySpec = new PKCS8EncodedKeySpec(fileKey);
@@ -53,17 +55,17 @@ public class PrivateKeyServer {
      * @param s
      * @return converted text in byte array.
      */
-public static byte[] hexToByte(String s) {
-    System.out.println("Codigo que llega: "+s);
-    int len = s.length();
-    byte[] data = new byte[len / 2];
-    for (int i = 0; i < len; i += 2) {
-        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                             + Character.digit(s.charAt(i+1), 16));
+    public static byte[] hexToByte(String s) {
+        System.out.println("Codigo que llega: " + s);
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
     }
-    return data;
-}
-    
+
     /**
      * Retorna el contenido de un fichero
      *

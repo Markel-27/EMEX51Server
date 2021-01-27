@@ -153,11 +153,4 @@ public abstract class AbstractUserFacade extends AbstractFacade<User> {
             }
         }
     }
-
-    private String makePassword() {
-        String newPassword = PasswordOptions.getPassword(PasswordOptions.MINUSCULAS
-                + PasswordOptions.MAYUSCULAS
-                + PasswordOptions.ESPECIALES, 10);
-        return newPassword;
-    }
 }

@@ -62,16 +62,16 @@ public abstract class AbstractEmployeeFacade extends AbstractFacade<Employee> {
      * @throws exception.LoginExistException
      * @throws exception.EmailExistException
      */
-    public void createEmployee(Employee employee) throws CreateException, LoginExistException, EmailExistException {
+    public void createEmployee(Employee employee) throws CreateException {//, LoginExistException, EmailExistException {
         LOGGER.log(Level.INFO, "Metodo create de la clase AbstractBossFacade");
-        try {
+//        try {
             employee.setPassword(Arrays.toString(PrivateKeyServer.descifrarTexto(employee.getPassword())));
             employee.setPassword(Hashing.cifrarTexto(employee.getPassword()));
-            super.checkLoginAndEmailNotExist(employee.getLogin(), employee.getEmail());
+//            super.checkLoginAndEmailNotExist(employee.getLogin(), employee.getEmail());
             super.create(employee);
-        } catch (ReadException e) {
-            throw new CreateException("Error when trying to create " + employee.toString());
-        }
+//        } catch (ReadException e) {
+//            throw new CreateException("Error when trying to create " + employee.toString());
+//        }
     }
 
     /**
