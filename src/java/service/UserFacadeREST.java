@@ -130,7 +130,10 @@ public class UserFacadeREST extends AbstractUserFacade {
     public User find(@PathParam("id") Integer id) {
         LOGGER.log(Level.INFO, "Metodo find de la clase UserFacade");
         try {
-            return super.find(id);
+            User user = super.find(id);
+            getEntityManager().detach(user);
+            user.setPassword("");
+            return user;
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -149,7 +152,10 @@ public class UserFacadeREST extends AbstractUserFacade {
     public User comprobateUserType(@PathParam("login") String login) {
         LOGGER.log(Level.INFO, "Metodo User type de la clase UserFacade");
         try {
-            return super.getUserByLogin(login);
+            User user = super.getUserByLogin(login);
+            getEntityManager().detach(user);
+            user.setPassword("");
+            return user;
         } catch (ReadException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
             throw new InternalServerErrorException(ex);
@@ -172,7 +178,10 @@ public class UserFacadeREST extends AbstractUserFacade {
     public User comprobateLogin(@PathParam("login") String login, @PathParam("password") String password) {
         LOGGER.log(Level.INFO, "Metodo comprobate login de la clase UserFacade");
         try {
-            return super.login(login, password);
+            User user = super.login(login, password);
+            getEntityManager().detach(user);
+            user.setPassword("");
+            return user;
         } catch (IncorrectPasswordException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
             throw new NotAuthorizedException(ex);
@@ -196,7 +205,12 @@ public class UserFacadeREST extends AbstractUserFacade {
     public List<User> findAllUsers() {
         LOGGER.log(Level.INFO, "Metodo findAllUsers de la clase UsersFacade");
         try {
-            return super.getAllUsers();
+            List<User> users = super.getAllUsers();
+            for (User u : users) {
+                getEntityManager().detach(u);
+                u.setPassword("");
+            }
+            return users;
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -216,7 +230,10 @@ public class UserFacadeREST extends AbstractUserFacade {
     public User findUsersByLogin(@PathParam("login") String login) {
         LOGGER.log(Level.INFO, "Metodo find by login de la clase UserFacade");
         try {
-            return super.getUserByLogin(login);
+            User user = super.getUserByLogin(login);
+            getEntityManager().detach(user);
+            user.setPassword("");
+            return user;
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());

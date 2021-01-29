@@ -18,7 +18,7 @@ import javax.persistence.EntityManager;
 /**
  * Restful service for {@link Sector}. Inherits from AbstractFacade. Contains createNamedQuerys from entity <code>Sector</code> in 
  * Area51 application.
- * @author Xabier Carnero.
+ * @author Markel Lopez de Uralde, Endika Ubierna, Xabier Carnero.
  */
 public abstract class AbstractSectorFacade extends AbstractFacade<Sector> {
     /**

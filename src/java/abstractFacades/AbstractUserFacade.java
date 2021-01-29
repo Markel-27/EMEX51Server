@@ -29,8 +29,7 @@ import security.PrivateKeyServer;
 /**
  * Restful service for <code>User</code>. Inherits from AbstractFacade. Contains
  * createNamadQuerys from entity User in Area51 application.
- *
- * @author Xabier Carnero.
+ * @author Markel Lopez de Uralde, Endika Ubierna, Xabier Carnero.
  */
 public abstract class AbstractUserFacade extends AbstractFacade<User> {
 
@@ -102,7 +101,7 @@ public abstract class AbstractUserFacade extends AbstractFacade<User> {
     }
 
     public User login(String login, String password) throws IncorrectPasswordException, LoginNotExistException, ReadException {
-        LOGGER.log(Level.INFO, "Login method from AbstractUSerFacade");
+        LOGGER.log(Level.INFO, "Login method from AbstractUserFacade");
         password = Hashing.cifrarTexto(Arrays.toString(PrivateKeyServer.descifrarTexto(password)));
         List<User> users = getAllUsers();
         for (User u: users) {
@@ -152,12 +151,5 @@ public abstract class AbstractUserFacade extends AbstractFacade<User> {
                 }
             }
         }
-    }
-
-    private String makePassword() {
-        String newPassword = PasswordOptions.getPassword(PasswordOptions.MINUSCULAS
-                + PasswordOptions.MAYUSCULAS
-                + PasswordOptions.ESPECIALES, 10);
-        return newPassword;
     }
 }

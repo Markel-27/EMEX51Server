@@ -26,7 +26,7 @@ import service.BossFacadeREST;
  * Restful service for {@link Employee}. Inherits from AbstractFacade. Contains
  * createNamedQuerys from entity <code>Employee</code> in Area51 application.
  *
- * @author Xabier Carnero.
+ * @author Markel Lopez de Uralde, Endika Ubierna, Xabier Carnero.
  */
 public abstract class AbstractEmployeeFacade extends AbstractFacade<Employee> {
 
@@ -59,19 +59,13 @@ public abstract class AbstractEmployeeFacade extends AbstractFacade<Employee> {
      *
      * @param employee An instance of {@link Employee} entity class.
      * @throws exception.CreateException
-     * @throws exception.LoginExistException
-     * @throws exception.EmailExistException
      */
-    public void createEmployee(Employee employee) throws CreateException, LoginExistException, EmailExistException {
+    public void createEmployee(Employee employee) throws CreateException {
         LOGGER.log(Level.INFO, "Metodo create de la clase AbstractBossFacade");
-        try {
             employee.setPassword(Arrays.toString(PrivateKeyServer.descifrarTexto(employee.getPassword())));
             employee.setPassword(Hashing.cifrarTexto(employee.getPassword()));
-            super.checkLoginAndEmailNotExist(employee.getLogin(), employee.getEmail());
             super.create(employee);
-        } catch (ReadException e) {
-            throw new CreateException("Error when trying to create " + employee.toString());
-        }
+
     }
 
     /**

@@ -7,12 +7,9 @@ package service;
 
 import abstractFacades.AbstractEmployeeFacade;
 import abstractFacades.AbstractFacade;
-import entity.Boss;
 import entity.Employee;
 import exception.CreateException;
 import exception.DeleteException;
-import exception.EmailExistException;
-import exception.LoginExistException;
 import exception.ReadException;
 import exception.UpdateException;
 import java.util.List;
@@ -23,10 +20,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -67,7 +62,6 @@ public class EmployeeFacadeREST extends AbstractEmployeeFacade {
      * Create (Insert) operation after receiving a Post HTTP order.
      *
      * @param employee The employee object in xml format.
-     * @param id
      */
     @POST
     @Consumes({MediaType.APPLICATION_XML})
@@ -78,12 +72,6 @@ public class EmployeeFacadeREST extends AbstractEmployeeFacade {
         } catch (CreateException ex) {
             Logger.getLogger(ArmyFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
             throw new InternalServerErrorException(ex);
-        } catch (EmailExistException ex) {
-            Logger.getLogger(AbstractEmployeeFacade.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ForbiddenException(ex);
-        } catch (LoginExistException ex) {
-            Logger.getLogger(EmployeeFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
-            throw new NotAuthorizedException(ex);
         }
     }
 
@@ -98,9 +86,15 @@ public class EmployeeFacadeREST extends AbstractEmployeeFacade {
     public void edit(Employee entity) {
         LOGGER.log(Level.INFO, "Metodo edit de la clase EmployeeFacade");
         try {
+            Employee employee = super.find(entity.getId());
+            getEntityManager().detach(employee);
+            entity.setPassword(employee.getPassword());
             super.edit(entity);
         } catch (UpdateException ex) {
-            LOGGER.severe(ex.getMessage());
+            Logger.getLogger(EmployeeFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (ReadException ex) {
+            Logger.getLogger(EmployeeFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
@@ -134,7 +128,10 @@ public class EmployeeFacadeREST extends AbstractEmployeeFacade {
     public Employee find(@PathParam("id") Integer id) {
         LOGGER.log(Level.INFO, "Metodo find de la clase EmployeeFacade");
         try {
-            return super.find(id);
+            Employee employee = super.find(id);
+            getEntityManager().detach(employee);
+            employee.setPassword("");
+            return employee;
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -152,7 +149,12 @@ public class EmployeeFacadeREST extends AbstractEmployeeFacade {
     public List<Employee> findAllEmployees() {
         LOGGER.log(Level.INFO, "Metodo findAllEmployees de la clase EmployeeFacade");
         try {
-            return super.getAllEmployees();
+            List<Employee> employees = super.getAllEmployees();
+            for (Employee e : employees) {
+                getEntityManager().detach(e);
+                e.setPassword("");
+            }
+            return employees;
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -170,9 +172,14 @@ public class EmployeeFacadeREST extends AbstractEmployeeFacade {
     @Path("name/{name}")
     @Produces({MediaType.APPLICATION_XML})
     public List<Employee> findEmployeesByName(@PathParam("name") String name) {
+        LOGGER.log(Level.INFO, "Metodo find por nombre de la clase EmployeeFacade");
         try {
-            LOGGER.log(Level.INFO, "Metodo find por nombre de la clase EmployeeFacade");
-            return super.getEmployeesByName(name);
+            List<Employee> employees = super.getEmployeesByName(name);
+            for (Employee e : employees) {
+                getEntityManager().detach(e);
+                e.setPassword("");
+            }
+            return employees;
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -183,16 +190,19 @@ public class EmployeeFacadeREST extends AbstractEmployeeFacade {
      * Gets a <code>List</code> {@link Employee} of Area51 with the same name as
      * the one passed by the parameter.
      *
-     * @param name A String with the name of a <code>Employee</code>.
+     * @param email
      * @return A list of <code>Employee</code>.
      */
     @GET
     @Path("email/{email}")
     @Produces({MediaType.APPLICATION_XML})
     public Employee findEmployeeByEmail(@PathParam("email") String email) {
+        LOGGER.log(Level.INFO, "Metodo find por nombre de la clase VisitorFacade");
         try {
-            LOGGER.log(Level.INFO, "Metodo find por nombre de la clase VisitorFacade");
-            return super.getEmployeeByEmail(email);
+            Employee employee = super.getEmployeeByEmail(email);
+            getEntityManager().detach(employee);
+            employee.setPassword("");
+            return employee;
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());

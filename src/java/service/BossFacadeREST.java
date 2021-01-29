@@ -64,7 +64,7 @@ public class BossFacadeREST extends AbstractBossFacade {
     /**
      * Create (Insert) operation after receiving a Post HTTP order.
      *
-     * @param entity The boss object in xml format.
+     * @param boss
      */
     @POST
     @Override
@@ -76,10 +76,7 @@ public class BossFacadeREST extends AbstractBossFacade {
         } catch (CreateException ex) {
             Logger.getLogger(ArmyFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
             throw new InternalServerErrorException(ex);
-        } catch (EmailExistException ex) {
-            Logger.getLogger(AbstractBossFacade.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ForbiddenException(ex);
-        } catch (LoginExistException ex) {
+        } catch (EmailExistException | LoginExistException ex) {
             Logger.getLogger(AbstractBossFacade.class.getName()).log(Level.SEVERE, null, ex);
             throw new ForbiddenException(ex);
         }
@@ -96,10 +93,15 @@ public class BossFacadeREST extends AbstractBossFacade {
     public void edit(Boss entity) {
         LOGGER.log(Level.INFO, "Metodo edit de la class BossFacade");
         try {
-
+            Boss boss = super.find(entity.getId());
+            getEntityManager().detach(boss);
+            entity.setPassword(boss.getPassword());
             super.edit(entity);
         } catch (UpdateException ex) {
-            LOGGER.severe(ex.getMessage());
+            Logger.getLogger(BossFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (ReadException ex) {
+            Logger.getLogger(BossFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
@@ -133,7 +135,10 @@ public class BossFacadeREST extends AbstractBossFacade {
     public Boss find(@PathParam("id") Integer id) {
         LOGGER.log(Level.INFO, "Metodo find de la clase BossFacade");
         try {
-            return super.find(id);
+            Boss boss = super.find(id);
+            getEntityManager().detach(boss);
+            boss.setPassword("");
+            return boss;
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -151,7 +156,12 @@ public class BossFacadeREST extends AbstractBossFacade {
     public List<Boss> findAllBosses() {
         LOGGER.log(Level.INFO, "Metodo findAllBosses de la clase BossFacade");
         try {
-            return super.getAllBosses();
+            List<Boss> bosses = super.getAllBosses();
+            for (Boss b : bosses) {
+                getEntityManager().detach(b);
+                b.setPassword("");
+            }
+            return bosses;
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -162,7 +172,7 @@ public class BossFacadeREST extends AbstractBossFacade {
      * Gets a <code>List</code> {@link Boss} of Area51 with the same name as the
      * one passed by the parameter.
      *
-     * @param fullName A String with the name of a <code>Boss</code>.
+     * @param name
      * @return A list of <code>Boss</code>.
      */
     @GET
@@ -171,7 +181,12 @@ public class BossFacadeREST extends AbstractBossFacade {
     public List<Boss> findBossesByName(@PathParam("name") String name) {
         LOGGER.log(Level.INFO, "Metodo find por nombre de la clase BossFacade");
         try {
-            return super.getBossesByName(name);
+            List<Boss> bosses = super.getBossesByName(name);
+            for (Boss b : bosses) {
+                getEntityManager().detach(b);
+                b.setPassword("");
+            }
+            return bosses;
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
