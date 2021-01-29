@@ -101,9 +101,15 @@ public class VisitorFacadeREST extends AbstractVisitorFacade {
     public void edit(Visitor entity) {
         LOGGER.log(Level.INFO, "Metodo edit de la clase VisitorFacade");
         try {
+            Visitor visitor = super.find(entity.getId());
+            getEntityManager().detach(visitor);
+            entity.setPassword(visitor.getPassword());
             super.edit(entity);
         } catch (UpdateException ex) {
             LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (ReadException ex) {
+            Logger.getLogger(VisitorFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
             throw new InternalServerErrorException(ex.getMessage());
         }
     }

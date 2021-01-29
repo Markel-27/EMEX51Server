@@ -28,10 +28,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import exception.EmailExistException;
-import exception.LoginExistException;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.ForbiddenException;
 
 /**
  * RESTful service for Employee entity. Includes CRUD operations.
@@ -66,7 +62,6 @@ public class EmployeeFacadeREST extends AbstractEmployeeFacade {
      * Create (Insert) operation after receiving a Post HTTP order.
      *
      * @param employee The employee object in xml format.
-     * @param id
      */
     @POST
     @Consumes({MediaType.APPLICATION_XML})
@@ -77,12 +72,6 @@ public class EmployeeFacadeREST extends AbstractEmployeeFacade {
         } catch (CreateException ex) {
             Logger.getLogger(ArmyFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
             throw new InternalServerErrorException(ex);
-//        } catch (EmailExistException ex) {
-//            Logger.getLogger(AbstractEmployeeFacade.class.getName()).log(Level.SEVERE, null, ex);
-//            throw new ForbiddenException(ex);
-//        } catch (LoginExistException ex) {
-//            Logger.getLogger(EmployeeFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
-//            throw new NotAuthorizedException(ex);
         }
     }
 
@@ -97,9 +86,15 @@ public class EmployeeFacadeREST extends AbstractEmployeeFacade {
     public void edit(Employee entity) {
         LOGGER.log(Level.INFO, "Metodo edit de la clase EmployeeFacade");
         try {
+            Employee employee = super.find(entity.getId());
+            getEntityManager().detach(employee);
+            entity.setPassword(employee.getPassword());
             super.edit(entity);
         } catch (UpdateException ex) {
-            LOGGER.severe(ex.getMessage());
+            Logger.getLogger(EmployeeFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (ReadException ex) {
+            Logger.getLogger(EmployeeFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
             throw new InternalServerErrorException(ex.getMessage());
         }
     }

@@ -16,7 +16,7 @@ import javax.persistence.EntityManager;
 /**
  * Restful service for {@link Creature}. Inherits from AbstractFacade. Contains createNamedQuerys from entity 
  * <code>Creature</code> in Area51 application.
- * @author Xabier Carnero.
+ * @author Markel Lopez de Uralde, Endika Ubierna, Xabier Carnero.
  */
 public abstract class AbstractCreatureFacade extends AbstractFacade<Creature> {
     /**

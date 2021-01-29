@@ -14,7 +14,10 @@ import exception.IncorrectPasswordException;
 import exception.LoginExistException;
 import exception.LoginNotExistException;
 import exception.ReadException;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,8 +28,7 @@ import service.BossFacadeREST;
 /**
  * Restful service for <code>Visitor</code>. Inherits from AbstractFacade.
  * Contains createNamadQuerys from entity Visitor in Area51 application.
- *
- * @author Xabier Carnero.
+ * @author Markel Lopez de Uralde, Endika Ubierna, Xabier Carnero.
  */
 public abstract class AbstractVisitorFacade extends AbstractFacade<Visitor> {
 
@@ -86,6 +88,9 @@ public abstract class AbstractVisitorFacade extends AbstractFacade<Visitor> {
             super.checkLoginAndEmailNotExist(visitor.getLogin(), visitor.getEmail());
             visitor.setVisitado(false);
             visitor.setVisitaRespuesta(false);
+            Date date = Date.from(LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC));
+            visitor.setLastAccess(date);
+            visitor.setLastPasswordChange(date);
             super.create(visitor);
         } catch (ReadException e) {
             throw new CreateException("Error when trying to create " + visitor.toString());

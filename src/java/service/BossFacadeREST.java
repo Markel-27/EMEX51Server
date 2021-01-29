@@ -93,10 +93,15 @@ public class BossFacadeREST extends AbstractBossFacade {
     public void edit(Boss entity) {
         LOGGER.log(Level.INFO, "Metodo edit de la class BossFacade");
         try {
-
+            Boss boss = super.find(entity.getId());
+            getEntityManager().detach(boss);
+            entity.setPassword(boss.getPassword());
             super.edit(entity);
         } catch (UpdateException ex) {
-            LOGGER.severe(ex.getMessage());
+            Logger.getLogger(BossFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (ReadException ex) {
+            Logger.getLogger(BossFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
             throw new InternalServerErrorException(ex.getMessage());
         }
     }

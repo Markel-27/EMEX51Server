@@ -6,10 +6,8 @@
 package security;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -56,7 +54,6 @@ public class PrivateKeyServer {
      * @return converted text in byte array.
      */
     public static byte[] hexToByte(String s) {
-        System.out.println("Codigo que llega: " + s);
         int len = s.length();
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {

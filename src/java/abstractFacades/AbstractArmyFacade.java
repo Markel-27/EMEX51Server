@@ -17,7 +17,7 @@ import javax.persistence.EntityManager;
 /**
  * Restful service for {@link Army}. Inherits from AbstractFacade. Contains createNamedQuerys from entity 
  * <code>Army</code> in Area51 application.
- * @author Xabier Carnero.
+ * @author Markel Lopez de Uralde, Endika Ubierna, Xabier Carnero.
  */
 public abstract class AbstractArmyFacade extends AbstractFacade<Army> {
     /**
