@@ -7,13 +7,16 @@ package abstractFacades;
 
 import entity.Sector;
 import entity.SectorContent;
+import entity.SectorType;
 import exception.CreateException;
 import exception.DeleteException;
 import exception.ReadException;
+import exception.SectorNotExistException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 /**
  * Restful service for {@link Sector}. Inherits from AbstractFacade. Contains createNamedQuerys from entity <code>Sector</code> in 
@@ -91,13 +94,15 @@ public abstract class AbstractSectorFacade extends AbstractFacade<Sector> {
      * @return A list of <code>Sector</code>.
      * @throws ReadException Thrown when any error produced during the read operation.
      */
-    public List <Sector> getSectorsByName(String name) throws ReadException {
+    public Sector getSectorsByName(String name) throws ReadException, SectorNotExistException {
         LOGGER.log(Level.INFO, "Metodo getSectorsByName de la clase AbstractSectorFacade");
         try {
-            return getEntityManager().createNamedQuery("findSectorByName")
+            return (Sector) getEntityManager().createNamedQuery("findSectorByName")
                     .setParameter("name", name)
-                    .getResultList();
-        } catch (Exception e) {
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            throw new SectorNotExistException();
+        } catch (RuntimeException e){
             throw new ReadException("Error when trying to get sectors by name");
         }
     }
@@ -107,7 +112,7 @@ public abstract class AbstractSectorFacade extends AbstractFacade<Sector> {
      * @return A list of <code>Sector</code>.
      * @throws ReadException Thrown when any error produced during the read operation.
      */
-    public List<Sector> getSectorsByType(String type) throws ReadException {
+    public List<Sector> getSectorsByType(SectorType type) throws ReadException {
         LOGGER.log(Level.INFO, "Metodo getSectorsByType de la clase AbstractSectorFacade");
         try {
             return getEntityManager().createNamedQuery("findSectorByType")

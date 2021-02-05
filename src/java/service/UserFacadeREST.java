@@ -168,7 +168,7 @@ public class UserFacadeREST extends AbstractUserFacade {
     /**
      * Find (Select) operation after receiving a Get HTTP order.
      *
-     * @param login
+     * @param login 
      * @param password
      * @return A User object in xml format.
      */

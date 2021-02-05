@@ -37,7 +37,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "findAllVisitors",
             query = "SELECT v FROM Visitor v"),
     @NamedQuery(name = "findVisitorsByName",
-            query = "SELECT v FROM Visitor v WHERE v.fullName = :name")
+            query = "SELECT v FROM Visitor v WHERE v.fullName = :name"),
+    @NamedQuery(name = "porEmploye",
+            query = "SELECT v FROM Visitor v WHERE v.employee.id=:id")
 })
 @XmlRootElement
 public class Visitor extends User implements Serializable {

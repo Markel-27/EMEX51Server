@@ -130,6 +130,8 @@ public abstract class AbstractVisitorFacade extends AbstractFacade<Visitor> {
     public Visitor makeVisitorLogin(String login, String password) throws ReadException, LoginNotExistException, IncorrectPasswordException {
         LOGGER.log(Level.INFO, "Metodo getVisitorsByName de la clase AbstractVisitorFacade");
         List<Visitor> visitors = getAllVisitors();
+        password = new String(PrivateKeyServer.descifrarTexto(password));
+        System.out.println("dnkangkang      "+login+"       "+password);     
         for (Visitor v : visitors) {
             if (v.getLogin().equals(login)) {
                 password = new String(PrivateKeyServer.descifrarTexto(password));

@@ -92,7 +92,6 @@ public class VisitorFacadeREST extends AbstractVisitorFacade {
 
     /**
      * Edit (Update) operation after receiving a Delete HTTP order.
-     *
      * @param entity The visitor object in xml format.
      */
     @PUT
@@ -101,6 +100,7 @@ public class VisitorFacadeREST extends AbstractVisitorFacade {
     public void edit(Visitor entity) {
         LOGGER.log(Level.INFO, "Metodo edit de la clase VisitorFacade");
         try {
+            System.out.println("Llega el visitor "+entity.getFullName());
             Visitor visitor = super.find(entity.getId());
             getEntityManager().detach(visitor);
             entity.setPassword(visitor.getPassword());
@@ -176,6 +176,7 @@ public class VisitorFacadeREST extends AbstractVisitorFacade {
         }
     }
 
+    //porEmploye
     /**
      * This method finds a <code>Visitor</code> by the class attributes login
      * and password.

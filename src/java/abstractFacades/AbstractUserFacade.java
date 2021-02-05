@@ -86,18 +86,17 @@ public abstract class AbstractUserFacade extends AbstractFacade<User> {
         LOGGER.log(Level.INFO, "Metodo getUserByLogin de la clase AbstractUserFacade");
         
         User user = new User();
-            List<User> users = getAllUsers();
-            for (User u: users) {
-                if (u.getLogin().compareToIgnoreCase(login) == 0) {
-                    if (u instanceof Boss){
-                        user.setLogin("Boss");
-                    } else if(u instanceof Employee){
-                        user.setLogin("Employee");
-                    }
-                    return user;
-                }
+        List<User> users = getAllUsers();
+        for (User u : users) {
+            if (u.getLogin().equalsIgnoreCase(login)) {
+                if (u instanceof Boss) 
+                    user.setLogin("Boss");
+                else if (u instanceof Employee)
+                    user.setLogin("Employee");
+                return user;
             }
-            throw new LoginNotExistException();
+        }
+        throw new LoginNotExistException();
     }
 
     public User login(String login, String password) throws IncorrectPasswordException, LoginNotExistException, ReadException {
@@ -106,7 +105,7 @@ public abstract class AbstractUserFacade extends AbstractFacade<User> {
         List<User> users = getAllUsers();
         for (User u: users) {
             if (u.getLogin().equals(login)) {
-                if (u.getPassword().equals(password)) {
+                if (u.getPassword().equalsIgnoreCase(password)) {
                     return u;
                 } else {
                     throw new IncorrectPasswordException();

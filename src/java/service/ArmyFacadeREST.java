@@ -39,7 +39,6 @@ import javax.ws.rs.core.MediaType;
 @Path("army")
 //Los @consume y @produce xml es que recibe o envia en formato xml por http.
 public class ArmyFacadeREST extends AbstractArmyFacade {
-
     /**
      * Logger for this class.
      */

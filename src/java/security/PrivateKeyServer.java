@@ -16,8 +16,8 @@ import javax.crypto.Cipher;
 import mail.CifradoPrivadoMail;
 
 /**
- *
- * @author xabig
+ * This class contains the methods to decrypt passwords.
+ * @author Xabier Carnero, Endika Ubierna, Markel Lopez de Uralde.
  */
 public class PrivateKeyServer {
 

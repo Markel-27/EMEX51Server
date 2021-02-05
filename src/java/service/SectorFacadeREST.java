@@ -8,9 +8,11 @@ package service;
 import abstractFacades.AbstractFacade;
 import abstractFacades.AbstractSectorFacade;
 import entity.Sector;
+import entity.SectorType;
 import exception.CreateException;
 import exception.DeleteException;
 import exception.ReadException;
+import exception.SectorNotExistException;
 import exception.UpdateException;
 import java.util.List;
 import java.util.logging.Level;
@@ -20,6 +22,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
@@ -67,7 +70,7 @@ public class SectorFacadeREST extends AbstractSectorFacade {
             super.create(entity);
         } catch (CreateException ex) {
             Logger.getLogger(ArmyFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
-            throw new InternalServerErrorException(ex);
+            throw new ForbiddenException(ex);
         }
     }
     /**
@@ -142,13 +145,16 @@ public class SectorFacadeREST extends AbstractSectorFacade {
     @GET
     @Path("name/{name}")
     @Produces({MediaType.APPLICATION_XML})
-    public List <Sector> findSectorsByName(@PathParam("name") String name) {
+    public Sector findSectorsByName(@PathParam("name") String name) {
         LOGGER.log(Level.INFO, "Metodo find by name de la clase SectorFacade");
         try {
             return super.getSectorsByName(name);
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
+        } catch (SectorNotExistException ex) {
+            Logger.getLogger(SectorFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            throw new NotFoundException();
         }
     }
     /**
@@ -159,7 +165,7 @@ public class SectorFacadeREST extends AbstractSectorFacade {
     @GET
     @Path("type/{type}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Sector> findSectorsByType(@PathParam("type") String type) {
+    public List<Sector> findSectorsByType(@PathParam("type") SectorType type) {
         LOGGER.log(Level.INFO, "Metodo find by type de la clase SectorFacade");
         try {
             return super.getSectorsByType(type);
