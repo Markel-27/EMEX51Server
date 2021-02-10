@@ -37,7 +37,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "findEmployeesByName",
             query = "SELECT e FROM Employee e WHERE e.fullName = :name"),
     @NamedQuery(name = "findEmployeeByEmail",
-            query = "SELECT e FROM Employee e WHERE e.email = :email")
+            query = "SELECT e FROM Employee e WHERE e.email = :email"),
+     @NamedQuery(name = "findVisitorByEmployee",
+            query = "SELECT v FROM Visitor v, Employee e WHERE visitors.employee.id=e.id AND e.id =: empleado")
 })
 @XmlRootElement
 public class Employee extends User implements Serializable {

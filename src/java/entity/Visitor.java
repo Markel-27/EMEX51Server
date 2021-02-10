@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * {@link Employee} and the {@link Sector}.
  * @since 23/11/2020
  * @version 1.0
- * @author Xabier Carnero, Endika Ubierna, Markel Lopez de Uralde.
+ * @author Markel Lopez de Uralde.
  */
 @Entity
 //Vamos a tener un campo en la tabla que nos indica que tipo de usuario es
@@ -37,7 +37,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "findAllVisitors",
             query = "SELECT v FROM Visitor v"),
     @NamedQuery(name = "findVisitorsByName",
-            query = "SELECT v FROM Visitor v WHERE v.fullName = :name")
+            query = "SELECT v FROM Visitor v WHERE v.fullName = :name"),
+   
 })
 @XmlRootElement
 public class Visitor extends User implements Serializable {

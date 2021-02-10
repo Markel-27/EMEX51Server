@@ -7,6 +7,7 @@ package service;
 
 import abstractFacades.AbstractFacade;
 import abstractFacades.AbstractVisitorFacade;
+import entity.Employee;
 import entity.Visitor;
 import exception.CreateException;
 import exception.DeleteException;
@@ -40,7 +41,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * RESTful service for Visitor entity. Includes CRUD operations.
  *
- * @author Xabier Carnero, Endika Ubierna, Markel Lopez de Uralde
+ * @author Markel Lopez de Uralde
  * @since 04/12/2020
  * @version 1.0
  */
@@ -230,7 +231,31 @@ public class VisitorFacadeREST extends AbstractVisitorFacade {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
+    
+   /**
+    * 
+    * @param id
+    * @return 
+    */
 
+    
+    @GET
+    @Path("employee/{id}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Visitor> findVisitorByEmployee (@PathParam("id") Long id) {
+        try {
+            List<Visitor> visitors = super.getVisitorsByEmployee(id);
+            for (Visitor v : visitors) { 
+            getEntityManager().detach(v);
+            v.setPassword("");
+            }
+            return visitors;
+        } catch (ReadException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+    
     /**
      * Gets an {@link EntityManager} instance.
      *

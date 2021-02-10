@@ -5,6 +5,7 @@
  */
 package abstractFacades;
 
+import entity.Employee;
 import security.Hashing;
 import entity.User;
 import entity.Visitor;
@@ -28,7 +29,7 @@ import service.BossFacadeREST;
 /**
  * Restful service for <code>Visitor</code>. Inherits from AbstractFacade.
  * Contains createNamadQuerys from entity Visitor in Area51 application.
- * @author Markel Lopez de Uralde, Endika Ubierna, Xabier Carnero.
+ * @author Markel Lopez de Uralde
  */
 public abstract class AbstractVisitorFacade extends AbstractFacade<Visitor> {
 
@@ -127,6 +128,7 @@ public abstract class AbstractVisitorFacade extends AbstractFacade<Visitor> {
      * @throws LoginNotExistException
      * @throws IncorrectPasswordException
      */
+    
     public Visitor makeVisitorLogin(String login, String password) throws ReadException, LoginNotExistException, IncorrectPasswordException {
         LOGGER.log(Level.INFO, "Metodo getVisitorsByName de la clase AbstractVisitorFacade");
         List<Visitor> visitors = getAllVisitors();
@@ -143,4 +145,21 @@ public abstract class AbstractVisitorFacade extends AbstractFacade<Visitor> {
         }
         throw new LoginNotExistException();
     }
+    
+    /**
+     * 
+     */
+    
+    public List<Visitor> getVisitorsByEmployee(Long id) throws ReadException {
+        LOGGER.log(Level.INFO, "Metodo getVisitorsByEmployee de la clase AbstractVisitorFacade");
+        try {
+            return getEntityManager().createNamedQuery("findVisitorsByEmployee")
+                    .setParameter("id", id)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new ReadException("Error when trying to get visitors by name");
+        }
+    }
+    
+    
 }
